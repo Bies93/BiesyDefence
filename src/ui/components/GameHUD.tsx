@@ -4,13 +4,6 @@ interface GameHUDProps {
   snapshot: GameSnapshot | null
 }
 
-const phaseLabels: Record<GameSnapshot['wavePhase'], string> = {
-  idle: 'Ready',
-  active: 'Engaged',
-  completed: 'Cleared',
-  finalized: 'Finalized',
-}
-
 interface HudLabelProps {
   iconClass: string
   label: string
@@ -118,12 +111,9 @@ export function GameHUD({ snapshot }: GameHUDProps) {
             {safeSnapshot.status === 'won' && '🏆 VICTORY'}
             {safeSnapshot.status === 'lost' && '💀 DEFEATED'}
           </div>
-          
-          <div className="wave-phase-indicator">
-            <span className="phase-label">Wave State:</span>
-            <span className={`phase-value phase-${safeSnapshot.wavePhase}`}>
-              {phaseLabels[safeSnapshot.wavePhase]}
-            </span>
+          <div className="status-cta">
+            <span className="cta-dot" aria-hidden="true" />
+            <span className="cta-copy">Command surface synchronized</span>
           </div>
         </div>
 

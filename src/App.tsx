@@ -444,28 +444,40 @@ function App() {
           {liveAnnouncement ?? ''}
         </div>
       <header className="app-header">
-        <div>
-          <p className="eyebrow">Cannabis Cultivation Defense</p>
-          <h1>Phased Bio-Defense</h1>
-          <p className="subtitle">Alpha prototype - Phase 1+2 build</p>
+        <div className="brand-block">
+          <div className="brand-topline">
+            <span className="brand-chip">Defense Nexus</span>
+            <span className="brand-signal" aria-hidden="true">● live</span>
+          </div>
+          <h1>Orbital Bioshield Command</h1>
+          <p className="subtitle">
+            Coordinate towers, tempo, and waves from a focused command surface.
+          </p>
+          <div className="brand-meta">
+            <span className="meta-pill">Prime build</span>
+            <span className="meta-pill">Stability: Green</span>
+            <span className="meta-pill">Adaptive routing online</span>
+          </div>
         </div>
-        <GameHUD snapshot={snapshot} />
-        <GameControls
-          status={snapshot?.status ?? 'idle'}
-          onStart={handleStart}
-          onPause={handlePause}
-          onNextWave={handleNextWave}
-          onReset={handleReset}
-          nextWaveAvailable={snapshot?.nextWaveAvailable ?? false}
-          gameSpeed={snapshot?.gameSpeed ?? 1}
-          onSpeedChange={handleSpeedChange}
-          isBusy={isAppBusy}
-          audioConfig={audioConfig}
-          onMasterVolumeChange={handleMasterVolumeChange}
-          onSfxVolumeChange={handleSfxVolumeChange}
-          onMusicVolumeChange={handleMusicVolumeChange}
-          onToggleMute={handleToggleMute}
-        />
+        <div className="header-panel">
+          <GameHUD snapshot={snapshot} />
+          <GameControls
+            status={snapshot?.status ?? 'idle'}
+            onStart={handleStart}
+            onPause={handlePause}
+            onNextWave={handleNextWave}
+            onReset={handleReset}
+            nextWaveAvailable={snapshot?.nextWaveAvailable ?? false}
+            gameSpeed={snapshot?.gameSpeed ?? 1}
+            onSpeedChange={handleSpeedChange}
+            isBusy={isAppBusy}
+            audioConfig={audioConfig}
+            onMasterVolumeChange={handleMasterVolumeChange}
+            onSfxVolumeChange={handleSfxVolumeChange}
+            onMusicVolumeChange={handleMusicVolumeChange}
+            onToggleMute={handleToggleMute}
+          />
+        </div>
       </header>
 
       <main className="main-stage">
