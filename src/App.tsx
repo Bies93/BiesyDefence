@@ -444,28 +444,60 @@ function App() {
           {liveAnnouncement ?? ''}
         </div>
       <header className="app-header">
-        <div>
-          <p className="eyebrow">Cannabis Cultivation Defense</p>
-          <h1>Phased Bio-Defense</h1>
-          <p className="subtitle">Alpha prototype - Phase 1+2 build</p>
+        <div className="hero-banner">
+          <div className="hero-copy">
+            <p className="eyebrow">Command Console</p>
+            <h1>BioShield Uplink</h1>
+            <p className="subtitle">
+              Direct the turret line, sculpt the tempo, and keep the breach sealed.
+            </p>
+            <div className="hero-tags">
+              <span className="tag-chip">Real-time tactics</span>
+              <span className="tag-chip">Adaptive tempo</span>
+              <span className="tag-chip">Precision build</span>
+            </div>
+          </div>
+          <div className="hero-highlight" role="status" aria-live="polite">
+            <div className="highlight-label">Session</div>
+            <div className={`highlight-state state-${snapshotStatus ?? 'idle'}`}>
+              <span className="pulse-dot" aria-hidden="true" />
+              <span className="state-text">
+                {snapshotStatus === 'running' && 'Live engagement'}
+                {snapshotStatus === 'paused' && 'On hold'}
+                {snapshotStatus === 'idle' && 'Ready to deploy'}
+                {snapshotStatus === 'won' && 'Secured run'}
+                {snapshotStatus === 'lost' && 'Breach detected'}
+                {!snapshotStatus && 'Initializing systems'}
+              </span>
+            </div>
+          </div>
         </div>
-        <GameHUD snapshot={snapshot} />
-        <GameControls
-          status={snapshot?.status ?? 'idle'}
-          onStart={handleStart}
-          onPause={handlePause}
-          onNextWave={handleNextWave}
-          onReset={handleReset}
-          nextWaveAvailable={snapshot?.nextWaveAvailable ?? false}
-          gameSpeed={snapshot?.gameSpeed ?? 1}
-          onSpeedChange={handleSpeedChange}
-          isBusy={isAppBusy}
-          audioConfig={audioConfig}
-          onMasterVolumeChange={handleMasterVolumeChange}
-          onSfxVolumeChange={handleSfxVolumeChange}
-          onMusicVolumeChange={handleMusicVolumeChange}
-          onToggleMute={handleToggleMute}
-        />
+
+        <div className="header-panels">
+          <GameHUD snapshot={snapshot} />
+          <div className="control-panel">
+            <div className="panel-title-row">
+              <p className="eyebrow">Operations</p>
+              <span className="panel-sub">Flow + Audio</span>
+            </div>
+            <GameControls
+              status={snapshot?.status ?? 'idle'}
+              onStart={handleStart}
+              onPause={handlePause}
+              onNextWave={handleNextWave}
+              onReset={handleReset}
+              nextWaveAvailable={snapshot?.nextWaveAvailable ?? false}
+              gameSpeed={snapshot?.gameSpeed ?? 1}
+              onSpeedChange={handleSpeedChange}
+              isBusy={isAppBusy}
+              audioConfig={audioConfig}
+              onMasterVolumeChange={handleMasterVolumeChange}
+              onSfxVolumeChange={handleSfxVolumeChange}
+              onMusicVolumeChange={handleMusicVolumeChange}
+              onToggleMute={handleToggleMute}
+            />
+          </div>
+        </div>
       </header>
 
       <main className="main-stage">

@@ -4,13 +4,6 @@ interface GameHUDProps {
   snapshot: GameSnapshot | null
 }
 
-const phaseLabels: Record<GameSnapshot['wavePhase'], string> = {
-  idle: 'Ready',
-  active: 'Engaged',
-  completed: 'Cleared',
-  finalized: 'Finalized',
-}
-
 interface HudLabelProps {
   iconClass: string
   label: string
@@ -68,68 +61,94 @@ export function GameHUD({ snapshot }: GameHUDProps) {
       : 0
   const fpsDisplay = safeSnapshot.fps
 
+  const waveCompletion = Math.min(
+    Math.max(safeSnapshot.wave.current / safeSnapshot.wave.total, 0),
+    1
+  )
+
   return (
-    <>
-      <div className="hud">
-        <div className="hud-section primary-stats">
-          <div className={`hud-row money-row ${moneyLow ? 'warning' : ''}`}>
-            <HudLabel iconClass="hud-icon-money" label="Money" />
-            <strong className="money-amount">${safeSnapshot.money}</strong>
-            {moneyLow && <span className="warning-indicator">⚠️</span>}
+    <div className="hud hud-refined">
+      <div className="hud-header">
+        <div className="hud-title-group">
+          <p className="eyebrow">Telemetry</p>
+          <h3>Frontline Readout</h3>
+          <span className="microcopy">Live economy, attrition, and tempo in one glance.</span>
+        </div>
+        <div className="wave-progress" aria-label="Wave progress">
+          <div className="progress-label">Wave Track</div>
+          <div className="progress-rail">
+            <div className="progress-fill" style={{ width: `${waveCompletion * 100}%` }} />
           </div>
-          <div className={`hud-row lives-row ${livesCritical ? 'critical' : livesLow ? 'warning' : ''}`}>
-            <HudLabel iconClass="hud-icon-lives" label="Lives" />
-            <strong className="lives-amount">{safeSnapshot.lives}</strong>
-            {livesCritical && <span className="critical-indicator">❗</span>}
-            {livesLow && !livesCritical && <span className="warning-indicator">⚠️</span>}
-          </div>
-          <div className="hud-row score-row">
-            <HudLabel iconClass="hud-icon-score" label="Score" />
-            <strong className="score-amount">{safeSnapshot.score.toLocaleString()}</strong>
+          <div className="progress-values">
+            <span>Wave {safeSnapshot.wave.current}</span>
+            <span>Total {safeSnapshot.wave.total}</span>
           </div>
         </div>
-        
-        <div className="hud-section game-stats">
-          <div className="hud-row wave-row">
-            <HudLabel iconClass="hud-icon-wave" label="Wave" />
-            <strong>{safeSnapshot.wave.current} / {safeSnapshot.wave.total}</strong>
-            {safeSnapshot.wave.queued > 0 && (
-              <span className="queued-info">{safeSnapshot.wave.queued} pending</span>
-            )}
+      </div>
+
+      <div className="hud-grid">
+        <div className={`hud-card money-card ${moneyLow ? 'warning' : ''}`}>
+          <HudLabel iconClass="hud-icon-money" label="Credits" />
+          <div className="stat-main">
+            <strong className="stat-value">${safeSnapshot.money}</strong>
+            <span className="stat-hint">Resource pool</span>
           </div>
-          
-          <div className="hud-row speed-row">
-            <HudLabel iconClass="hud-icon-speed" label="Speed" />
-            <strong>{safeSnapshot.gameSpeed}x</strong>
+          {moneyLow && <span className="stat-alert">Low reserves</span>}
+        </div>
+
+        <div className={`hud-card lives-card ${livesCritical ? 'critical' : livesLow ? 'warning' : ''}`}>
+          <HudLabel iconClass="hud-icon-lives" label="Integrity" />
+          <div className="stat-main">
+            <strong className="stat-value">{safeSnapshot.lives}</strong>
+            <span className="stat-hint">Core health</span>
           </div>
-          
-          <div className={`hud-row performance-row ${fpsLow ? 'warning' : ''}`}>
-            <span className="hud-label">FPS</span>
-            <strong className={fpsLow ? 'low-fps' : ''}>{fpsDisplay.toFixed(1)}</strong>
-            {fpsLow && <span className="warning-indicator">⚠️</span>}
+          {livesCritical && <span className="stat-alert">Critical!</span>}
+          {livesLow && !livesCritical && <span className="stat-alert">Reinforce soon</span>}
+        </div>
+
+        <div className="hud-card score-card">
+          <HudLabel iconClass="hud-icon-score" label="Score" />
+          <div className="stat-main">
+            <strong className="stat-value">{safeSnapshot.score.toLocaleString()}</strong>
+            <span className="stat-hint">Efficiency index</span>
           </div>
         </div>
 
-        <div className="hud-section status-section">
-          <div className={`status-pill status-${safeSnapshot.status}`}>
-            {safeSnapshot.status === 'running' && '🎮 PLAYING'}
-            {safeSnapshot.status === 'paused' && '⏸️ PAUSED'}
-            {safeSnapshot.status === 'idle' && '⏳ READY'}
-            {safeSnapshot.status === 'won' && '🏆 VICTORY'}
-            {safeSnapshot.status === 'lost' && '💀 DEFEATED'}
+        <div className="hud-card wave-card">
+          <HudLabel iconClass="hud-icon-wave" label="Wave" />
+          <div className="stat-main">
+            <strong className="stat-value">{safeSnapshot.wave.current}</strong>
+            <span className="stat-hint">of {safeSnapshot.wave.total}</span>
           </div>
-          
-          <div className="wave-phase-indicator">
-            <span className="phase-label">Wave State:</span>
-            <span className={`phase-value phase-${safeSnapshot.wavePhase}`}>
-              {phaseLabels[safeSnapshot.wavePhase]}
-            </span>
+          {safeSnapshot.wave.queued > 0 && (
+            <span className="stat-alert">{safeSnapshot.wave.queued} queued</span>
+          )}
+        </div>
+
+        <div className="hud-card speed-card">
+          <HudLabel iconClass="hud-icon-speed" label="Tempo" />
+          <div className="stat-main">
+            <strong className="stat-value">{safeSnapshot.gameSpeed}x</strong>
+            <span className="stat-hint">Simulation speed</span>
           </div>
         </div>
 
+        <div className={`hud-card fps-card ${fpsLow ? 'warning' : ''}`}>
+          <div className="hud-row-title">
+            <span className="hud-label">Performance</span>
+          </div>
+          <div className="stat-main">
+            <strong className={`stat-value ${fpsLow ? 'low-fps' : ''}`}>{fpsDisplay.toFixed(1)}</strong>
+            <span className="stat-hint">Frames / sec</span>
+          </div>
+          {fpsLow && <span className="stat-alert">Optimize view</span>}
+        </div>
+      </div>
+
+      <div className="hud-footer">
         {safeSnapshot.nextWaveAvailable && (
           <div className="next-wave-ready">
-            🚀 Next wave available - Press N or click Next Wave
+            🚀 Next wave primed — press N or trigger the Next Wave control
           </div>
         )}
         {safeSnapshot.nextSpawnCountdown !== null && safeSnapshot.nextSpawnDelay !== null && (
@@ -147,8 +166,7 @@ export function GameHUD({ snapshot }: GameHUDProps) {
           </div>
         )}
       </div>
-
-    </>
+    </div>
   )
 }
 
